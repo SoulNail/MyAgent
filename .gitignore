@@ -1,0 +1,99 @@
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+.env/
+
+# =========================
+# Conda
+# =========================
+.conda/
+conda-bld/
+
+# =========================
+# Logs & temp files
+# =========================
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# =========================
+# OS specific
+# =========================
+# Windows
+Thumbs.db
+Desktop.ini
+*.lnk
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# =========================
+# IDEs / Editors
+# =========================
+# PyCharm / IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# VS Code
+.vscode/
+
+# Visual Studio / CMake (Orbbec SDK related)
+.vs/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+*.vcxproj*
+*.sln
+*.user
+
+# =========================
+# Build outputs / binaries
+# =========================
+bin/
+lib/
+out/
+Release/
+Debug/
+runs/
+
+# =========================
+# Models & caches (optional)
+# =========================
+# InsightFace / ONNX cache (可按需删除)
+*.onnx.cache
+.cache/
+
+
+# =========================
+# My files
+# =========================
+*.wav
+
+
+# =========================
+# Explicitly keep important files
+# =========================
+# DO NOT ignore face images or face database
