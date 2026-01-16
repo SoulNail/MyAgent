@@ -4,7 +4,7 @@ from stt.vad_recorder import VADRecorder
 from tts.fish_speech_tts import FishSpeechTTS, AsyncTTSWorker
 from agent.code_agent import SmolCodeAgent
 from utils.text_splitter import SentenceSplitter
-
+import os
 
 class VoiceAgentOrchestrator:
     """语音Agent协调器"""
@@ -41,13 +41,29 @@ class VoiceAgentOrchestrator:
                 # 1. 录音
                 audio_file = self.recorder.listen()
 
+                # 检查文件是否存在且大小正常
+                if not audio_file or not os.path.exists(audio_file):
+                    continue
+
                 # 2. 语音转文本
                 print("[STT] 正在识别...")
                 user_input = self.stt.transcribe(audio_file)
 
-                if not user_input:
-                    print("[STT] 未识别到有效内容")
+                # --- 关键逻辑：识别后立即删除临时音频文件 ---
+                try:
+                    os.remove(audio_file)
+                except:
+                    pass
+
+                # 3. 过滤掉幻觉内容
+                # 如果识别结果跟你的 initial_prompt 高度相似，直接舍弃
+                if not user_input or "普通话" in user_input or "简体中文" in user_input:
+                    print("[系统] 忽略无效输入或幻觉")
                     continue
+
+                # if not user_input:
+                #     print("[STT] 未识别到有效内容")
+                #     continue
 
                 print(f"\n用户: {user_input}")
 

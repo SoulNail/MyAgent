@@ -37,7 +37,12 @@ class WhisperSTT(BaseSTT):
         try:
             segments, _ = self.model.transcribe(
                 audio_file,
-                beam_size=self.config.beam_size
+                beam_size=self.config.beam_size,
+                language = "zh",  # 强制使用中文
+                initial_prompt="简体中文。",
+                vad_filter = True,
+                vad_parameters = dict(min_silence_duration_ms=500),
+                no_speech_threshold=0.6
             )
             text = "".join([s.text for s in segments]).strip()
             return text

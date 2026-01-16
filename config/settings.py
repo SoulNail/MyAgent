@@ -1,6 +1,6 @@
 import os
 from dataclasses import dataclass
-from typing import Literal
+from typing import Literal, Optional
 
 
 @dataclass
@@ -8,6 +8,9 @@ class TTSConfig:
     """TTS配置"""
     api_url: str = "http://192.168.123.100:8080/v1/tts"
     timeout: int = 30
+    ref_audio_path: str = "dz.mp3"
+    # 新增：参考音频对应的文字内容（建议填写，效果更好）
+    ref_text: str = "大家好，我是丁真。今天想跟大家分享我们这里的风景。清晨的草原上，马儿在自由奔跑，远处的雪山映着朝阳，特别漂亮。这里的一切都让我感到幸福，欢迎你们来理塘做客。"
 
 
 @dataclass

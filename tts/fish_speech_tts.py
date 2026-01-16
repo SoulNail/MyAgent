@@ -5,7 +5,8 @@ import requests
 from .base import BaseTTS
 from .player import AudioPlayer
 from config.settings import TTSConfig
-
+import ormsgpack  # 必须引入这个库
+import os
 
 class FishSpeechTTS(BaseTTS):
     """Fish Speech TTS 实现"""
@@ -35,16 +36,42 @@ class FishSpeechTTS(BaseTTS):
         if not text.strip():
             return b""
 
-        payload = {
+        # 1. 读取参考音频数据 (如果配置了路径)
+        ref_audio_bytes = b""
+        if hasattr(self.config, 'ref_audio_path') and self.config.ref_audio_path:
+            if os.path.exists(self.config.ref_audio_path):
+                try:
+                    with open(self.config.ref_audio_path, "rb") as f:
+                        ref_audio_bytes = f.read()
+                except Exception as e:
+                    print(f"[TTS警告] 读取参考音频失败: {e}")
+            else:
+                print(f"[TTS警告] 参考音频文件不存在: {self.config.ref_audio_path}")
+
+        # 2. 构造请求 Payload (符合 Fish Speech 标准格式)
+        # 注意：这里构造的是一个字典，等下用 msgpack 打包
+        request_data = {
             "text": text,
-            "streaming": False
+            "streaming": False,
+            "format": "wav",
         }
 
+        # 如果有参考音频，塞进去
+        if ref_audio_bytes:
+            request_data["references"] = [
+                {
+                    "audio": ref_audio_bytes, # 直接传 bytes
+                    "text": self.config.ref_text if hasattr(self.config, 'ref_text') else ""
+                }
+            ]
+
         try:
+            # 3. 使用 ormsgpack 进行打包 (这也是 Fish Speech 高效的原因)
+            # headers 必须改为 application/msgpack
             response = requests.post(
                 self.config.api_url,
-                json=payload,
-                headers={"Content-Type": "application/json"},
+                data=ormsgpack.packb(request_data),  # 使用 packb 打包二进制
+                headers={"Content-Type": "application/msgpack"},
                 timeout=self.config.timeout
             )
 
@@ -53,9 +80,6 @@ class FishSpeechTTS(BaseTTS):
             else:
                 print(f"[TTS错误] HTTP {response.status_code}: {response.text}")
                 return b""
-        except requests.exceptions.Timeout:
-            print(f"[TTS错误] 请求超时")
-            return b""
         except Exception as e:
             print(f"[TTS错误] {type(e).__name__}: {e}")
             return b""
