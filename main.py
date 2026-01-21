@@ -1,8 +1,7 @@
 import sys
-from config.settings import AppConfig
+from config.settings import AppConfig, default_config
 from orchestrator import VoiceAgentOrchestrator
 from tts.fish_speech_tts import FishSpeechTTS, AsyncTTSWorker
-from config.settings import default_config
 
 
 def test_tts():

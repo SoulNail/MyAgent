@@ -18,7 +18,7 @@ class VoiceAgentOrchestrator:
         self.recorder = VADRecorder(config.vad)
         self.tts = FishSpeechTTS(config.tts)
         self.tts_worker = AsyncTTSWorker(self.tts)
-        self.agent = SmolCodeAgent(config.agent)
+        self.agent = SmolCodeAgent(config.agent, config.weather)
         self.splitter = SentenceSplitter()
 
         self.memory = []

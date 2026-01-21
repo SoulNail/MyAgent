@@ -1,6 +1,7 @@
 from smolagents import CodeAgent, DuckDuckGoSearchTool, LiteLLMModel
 from .base import BaseAgent
-from config.settings import AgentConfig
+from .get_weather import WeatherTool
+from config.settings import AgentConfig, WeatherConfig
 
 
 class SmolCodeAgent(BaseAgent):
@@ -9,8 +10,9 @@ class SmolCodeAgent(BaseAgent):
     具备上下文记忆能力
     """
 
-    def __init__(self, config: AgentConfig):
-        self.config = config
+    def __init__(self, agent_config: AgentConfig, weather_config: WeatherConfig):
+        self.agent_config = agent_config
+        self.weather_config = weather_config
         self.agent = None
         self._initialize()
 
@@ -18,16 +20,19 @@ class SmolCodeAgent(BaseAgent):
         """初始化Agent"""
         try:
             model = LiteLLMModel(
-                model_id=self.config.model_id,
-                api_base=self.config.api_base,
-                api_key=self.config.api_key
+                model_id=self.agent_config.model_id,
+                api_base=self.agent_config.api_base,
+                api_key=self.agent_config.api_key
             )
 
+            get_weather = WeatherTool(weather_config=self.weather_config)
+
             self.agent = CodeAgent(
-                tools=[DuckDuckGoSearchTool()],
+                tools=[get_weather],
                 model=model,
                 add_base_tools=True,
             )
+            print("[Agent] 工具加载与配置注入成功")
             print(f"[Agent] 初始化成功")
         except Exception as e:
             print(f"[Agent错误] 初始化失败: {e}")

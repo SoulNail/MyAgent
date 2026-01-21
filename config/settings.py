@@ -39,6 +39,11 @@ class AgentConfig:
     model_id: str = "openai/Qwen/Qwen3-4B-Instruct-2507"
     api_key: str = "vllm-token"
 
+@dataclass
+class WeatherConfig:
+    """天气工具配置"""
+    seniverse_key: str = "Stqu08wWqILJtfygD"
+    api_url: str = "https://api.seniverse.com/v3/weather/now.json"
 
 @dataclass
 class AppConfig:
@@ -47,6 +52,7 @@ class AppConfig:
     stt: STTConfig
     vad: VADConfig
     agent: AgentConfig
+    weather: WeatherConfig
 
     @classmethod
     def from_env(cls):
@@ -62,6 +68,9 @@ class AppConfig:
             vad=VADConfig(),
             agent=AgentConfig(
                 api_base=os.getenv("AGENT_API_BASE", AgentConfig.api_base)
+            ),
+            weather=WeatherConfig(
+                seniverse_key=os.getenv("WEATHER_KEY", WeatherConfig.seniverse_key)
             )
         )
 
@@ -71,5 +80,6 @@ default_config = AppConfig(
     tts=TTSConfig(),
     stt=STTConfig(),
     vad=VADConfig(),
-    agent=AgentConfig()
+    agent=AgentConfig(),
+    weather=WeatherConfig()
 )
