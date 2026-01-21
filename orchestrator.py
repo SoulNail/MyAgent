@@ -21,6 +21,9 @@ class VoiceAgentOrchestrator:
         self.agent = SmolCodeAgent(config.agent)
         self.splitter = SentenceSplitter()
 
+        self.memory = []
+        self.max_memory_length = 10  # 限制记忆轮数，防止 Token 超限
+
         # 检查就绪状态
         if not all([
             self.stt.is_ready(),

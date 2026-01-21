@@ -91,7 +91,7 @@ runs/
 # My files
 # =========================
 *.wav
-
+*.mp3
 
 # =========================
 # Explicitly keep important files
