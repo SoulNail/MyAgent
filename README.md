@@ -152,6 +152,10 @@ python main.py --launch talk
 python main.py --launch text
 
 ```
+---
+
+运行示例：
+<img src="./TextMode.png" width="600" />
 
 ---
 
